@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>极简MBTI性格测试 | 4题快速版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f5f7fc 0%, #e9eef4 100%);
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+            padding: 1.5rem;
+            color: #1a2c3e;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+            padding: 1.8rem 1.5rem 2.2rem;
+            transition: all 0.2s ease;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.4rem;
+        }
+
+        .sub {
+            color: #5c6f87;
+            border-left: 4px solid #8b9dc3;
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            font-weight: 450;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.3rem;
+            margin-bottom: 1.4rem;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.05);
+            transition: transform 0.1s, box-shadow 0.2s;
+            border: 1px solid rgba(139, 157, 195, 0.2);
+        }
+
+        .question-card:hover {
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+        }
+
+        .q-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1e3b5c;
+        }
+
+        .q-num {
+            background: #d9e3f0;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2c4b6e;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            background: #fafcff;
+            padding: 0.6rem 0.8rem;
+            border-radius: 1rem;
+            transition: background 0.15s;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #f0f4fe;
+            border-color: #b7c9e2;
+        }
+
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 2px solid #8fabc3;
+            border-radius: 50%;
+            margin-top: 0.1rem;
+            position: relative;
+            cursor: pointer;
+            transition: 0.1s;
+            flex-shrink: 0;
+        }
+        input[type="radio"]:checked {
+            border-color: #3b6e9f;
+            background-color: #3b6e9f;
+            box-shadow: inset 0 0 0 3px white;
+        }
+        .option-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #1f3b4c;
+            font-weight: 450;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0 1.5rem;
+            justify-content: center;
+        }
+
+        button {
+            background: #2c5a7a;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 60px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-family: inherit;
+            flex: 0 1 auto;
+            min-width: 130px;
+        }
+
+        button:hover {
+            background: #1f4560;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+        }
+
+        .reset-btn {
+            background: #7c8ea0;
+        }
+        .reset-btn:hover {
+            background: #5f6f80;
+        }
+
+        .result-area {
+            background: #f1f5f9;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-top: 1.2rem;
+            border-left: 6px solid #4b7b9d;
+            transition: all 0.3s;
+        }
+
+        .result-type {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(125deg, #1f4e6e, #2d3e5f);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-sub {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c5a7a;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #cbdde9;
+            display: inline-block;
+            padding-bottom: 3px;
+        }
+
+        .dimension-list {
+            background: white;
+            border-radius: 1rem;
+            padding: 0.8rem 1rem;
+            margin: 1rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .dimension-badge {
+            background: #e6edf4;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1d4d6f;
+        }
+
+        .type-desc {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #2c3f4f;
+            margin-top: 0.7rem;
+            background: #ffffffc9;
+            padding: 0.8rem;
+            border-radius: 1rem;
+        }
+
+        .error-msg {
+            color: #c0392b;
+            background: #ffe6e5;
+            padding: 0.7rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #7c8c9e;
+            margin-top: 1.8rem;
+        }
+
+        @media (max-width: 550px) {
+            .container {
+                padding: 1.2rem;
+            }
+            .result-type {
+                font-size: 1.7rem;
+            }
+            .btn-group button {
+                width: 100%;
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>✨ 4D·极简MBTI</h1>
+    <div class="sub">四个维度 | 直觉选择 | 发现你的性格密码</div>
+
+    <!-- 问卷表单 -->
+    <form id="mbtiForm">
+        <!-- 第1题：E/I -->
+        <div class="question-card">
+            <div class="q-title"><span class="q-num">1</span> 能量来源</div>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="q1" value="A">
+                    <span class="option-text">🔋 A. 精力充沛，感觉“充满了电”，还想继续聊。</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q1" value="B">
+                    <span class="option-text">🌙 B. 感到疲惫，需要一个人独处一段时间来恢复能量。</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 第2题：S/N -->
+        <div class="question-card">
+            <div class="q-title"><span class="q-num">2</span> 信息获取</div>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="q2" value="A">
+                    <span class="option-text">📋 A. 关注具体的细节、实际操作和步骤，按照既有的、有效的方法去做。</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q2" value="B">
+                    <span class="option-text">🌈 B. 关注整体的可能性、背后的原理和未来的蓝图，喜欢尝试新方法。</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 第3题：T/F -->
+        <div class="question-card">
+            <div class="q-title"><span class="q-num">3</span> 决策方式</div>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="q3" value="A">
+                    <span class="option-text">⚖️ A. 这件事谁对谁错，以及逻辑上是否公平合理。</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q3" value="B">
+                    <span class="option-text">💖 B. 对方的感受是否受伤，以及如何维护和谐的关系。</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 第4题：J/P -->
+        <div class="question-card">
+            <div class="q-title"><span class="q-num">4</span> 生活态度</div>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="q4" value="A">
+                    <span class="option-text">📅 A. 喜欢制定计划，列出清单，早做决定，喜欢把事情安排得井井有条。</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q4" value="B">
+                    <span class="option-text">🌀 B. 喜欢随性而为，保持开放的选择权，临近截止日期时效率最高。</span>
+                </label>
+            </div>
+        </div>
+    </form>
+
+    <div class="btn-group">
+        <button id="submitBtn">✨ 查看结果</button>
+        <button id="resetBtn" class="reset-btn">🔄 重新选择</button>
+    </div>
+
+    <!-- 结果展示区 -->
+    <div id="resultContainer" class="result-area" style="display: none;">
+        <!-- 动态填充结果 -->
+    </div>
+    <footer>⚡ 4题极简版 · 趣味自测 | 参考MBTI框架，发现性格偏好</footer>
+</div>
+
+<script>
+    // ---------- 16型人格简介映射 (简洁趣味版) ----------
+    const typeDescriptions = {
+        'ISTJ': { nickname: '「物流师」', desc: '细致可靠，务实沉稳。重视事实与秩序，追求效率与责任。' },
+        'ISFJ': { nickname: '「守护者」', desc: '温柔体贴，默默付出。关注他人需求，善于维护传统与和谐。' },
+        'INFJ': { nickname: '「提倡者」', desc: '理想主义，洞察人心。富有创造力，追求深刻的意义与连结。' },
+        'INTJ': { nickname: '「建筑师」', desc: '战略思维，独立果断。善于规划长远，用逻辑构建完美蓝图。' },
+        'ISTP': { nickname: '「鉴赏家」', desc: '冷静务实，擅长动手。喜欢探索事物原理，灵活适应。' },
+        'ISFP': { nickname: '「探险家」', desc: '艺术敏感，活在当下。忠于内心，追求美感与自由。' },
+        'INFP': { nickname: '「调停者」', desc: '理想纯粹，善解人意。追寻价值观，富有诗意与热情。' },
+        'INTP': { nickname: '「逻辑学家」', desc: '好奇创新，逻辑至上。热衷理论，不断探寻思维边界。' },
+        'ESTP': { nickname: '「企业家」', desc: '行动派，机敏大胆。活在现实，善于解决突发问题。' },
+        'ESFP': { nickname: '「表演者」', desc: '活力四射，热爱社交。享受当下，给周围带来快乐。' },
+        'ENFP': { nickname: '「竞选者」', desc: '热情好奇，富有灵感。喜欢可能性，善于激励他人。' },
+        'ENTP': { nickname: '「辩论家」', desc: '机智敏捷，热衷挑战。喜欢头脑风暴，突破常规。' },
+        'ESTJ': { nickname: '「管理者」', desc: '高效务实，组织力强。注重规则，擅长带领团队。' },
+        'ESFJ': { nickname: '「执政官」', desc: '热心合作，重视和谐。关心社群，乐于服务他人。' },
+        'ENFJ': { nickname: '「主人公」', desc: '热情鼓舞，富有感染力。善于引导他人，关注集体成长。' },
+        'ENTJ': { nickname: '「指挥官」', desc: '魄力果断，天生领袖。战略规划，推动目标达成。' }
+    };
+
+    // 获取维度映射函数: 根据题号和选中值(A/B)返回MBTI字母
+    function getDimensionLetter(questionNum, selectedValue) {
+        // q1: E/I  (A->E, B->I)
+        if (questionNum === 1) return selectedValue === 'A' ? 'E' : 'I';
+        // q2: S/N  (A->S, B->N)
+        if (questionNum === 2) return selectedValue === 'A' ? 'S' : 'N';
+        // q3: T/F  (A->T, B->F)
+        if (questionNum === 3) return selectedValue === 'A' ? 'T' : 'F';
+        // q4: J/P  (A->J, B->P)
+        if (questionNum === 4) return selectedValue === 'A' ? 'J' : 'P';
+        return '';
+    }
+
+    // 维度中文名称 & 倾向解释
+    function getDimensionChinese(letter, typeCode) {
+        // 根据四维字母展示详细倾向（用于结果面板）
+        const map = {
+            'E': '外向型 (E) — 从社交互动中获取能量',
+            'I': '内向型 (I) — 从独处沉思中获取能量',
+            'S': '实感型 (S) — 关注具体细节与现实经验',
+            'N': '直觉型 (N) — 关注可能性和未来蓝图',
+            'T': '思考型 (T) — 依靠逻辑与客观分析决策',
+            'F': '情感型 (F) — 重视共情与人际和谐',
+            'J': '判断型 (J) — 喜欢计划与结构化生活',
+            'P': '感知型 (P) — 喜欢灵活与开放选项'
+        };
+        return map[letter] || letter;
+    }
+
+    // 获取用户答案并验证完整性
+    function getUserAnswers() {
+        const q1Radio = document.querySelector('input[name="q1"]:checked');
+        const q2Radio = document.querySelector('input[name="q2"]:checked');
+        const q3Radio = document.querySelector('input[name="q3"]:checked');
+        const q4Radio = document.querySelector('input[name="q4"]:checked');
+
+        if (!q1Radio || !q2Radio || !q3Radio || !q4Radio) {
+            return { success: false, message: "⚠️ 4道题目尚未全部完成，请先选择所有选项～" };
+        }
+
+        const answers = {
+            q1: q1Radio.value,
+            q2: q2Radio.value,
+            q3: q3Radio.value,
+            q4: q4Radio.value
+        };
+        return { success: true, answers };
+    }
+
+    // 根据四个答案生成MBTI四字母以及维度数组
+    function computeMBTI(answers) {
+        const letter1 = getDimensionLetter(1, answers.q1); // E/I
+        const letter2 = getDimensionLetter(2, answers.q2); // S/N
+        const letter3 = getDimensionLetter(3, answers.q3); // T/F
+        const letter4 = getDimensionLetter(4, answers.q4); // J/P
+        const mbtiType = letter1 + letter2 + letter3 + letter4;
+
+        // 构建每个维度的展示信息
+        const dimensions = [
+            { letter: letter1, meaning: getDimensionChinese(letter1, mbtiType) },
+            { letter: letter2, meaning: getDimensionChinese(letter2, mbtiType) },
+            { letter: letter3, meaning: getDimensionChinese(letter3, mbtiType) },
+            { letter: letter4, meaning: getDimensionChinese(letter4, mbtiType) }
+        ];
+        return { mbtiType, dimensions };
+    }
+
+    // 渲染结果到页面
+    function renderResult(mbtiType, dimensions) {
+        const container = document.getElementById('resultContainer');
+        if (!container) return;
+
+        // 获取类型描述数据
+        const typeData = typeDescriptions[mbtiType] || { nickname: '「独特人格」', desc: '你的性格组合充满个性，每个维度都反映出鲜明的偏好。继续探索更完整的自己吧！' };
+        const nickname = typeData.nickname;
+        const description = typeData.desc;
+
+        // 构建维度html
+        let dimensionHtml = '';
+        dimensions.forEach(dim => {
+            dimensionHtml += `<span class="dimension-badge">${dim.meaning}</span>`;
+        });
+
+        // 整体结果卡片
+        const resultHtml = `
+            <div class="result-type">${mbtiType}</div>
+            <div class="result-sub">${nickname}</div>
+            <div class="dimension-list">
+                ${dimensionHtml}
+            </div>
+            <div class="type-desc">
+                📌 ${description}<br>
+                <span style="font-size:0.8rem; color:#5f7f9a;">※ 基于4道题的快速评估，偏向娱乐探索，更完整解读请参考专业测试。</span>
+            </div>
+        `;
+
+        container.innerHTML = resultHtml;
+        container.style.display = 'block';
+        // 滚动到结果区域
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // 显示错误信息
+    function showError(msg) {
+        const container = document.getElementById('resultContainer');
+        if (!container) return;
+        container.innerHTML = `<div class="error-msg">❌ ${msg}</div>`;
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // 提交主逻辑
+    function handleSubmit() {
+        const result = getUserAnswers();
+        if (!result.success) {
+            showError(result.message);
+            return;
+        }
+        const { mbtiType, dimensions } = computeMBTI(result.answers);
+        renderResult(mbtiType, dimensions);
+    }
+
+    // 重置所有选项 & 清空结果区域
+    function handleReset() {
+        // 清除所有radio选中状态
+        const allRadios = document.querySelectorAll('input[type="radio"]');
+        allRadios.forEach(radio => {
+            radio.checked = false;
+        });
+        // 隐藏结果区域并清空内容
+        const resultContainer = document.getElementById('resultContainer');
+        if (resultContainer) {
+            resultContainer.style.display = 'none';
+            resultContainer.innerHTML = '';   // 清空内容避免残留
+        }
+        // 可选: 平滑回到顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 绑定事件 & 初始化时可能显示友好的占位(不显示结果)
+    document.addEventListener('DOMContentLoaded', () => {
+        const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        if (submitBtn) submitBtn.addEventListener('click', handleSubmit);
+        if (resetBtn) resetBtn.addEventListener('click', handleReset);
+
+        // 确保初始结果区域隐藏
+        const resultContainer = document.getElementById('resultContainer');
+        if (resultContainer) resultContainer.style.display = 'none';
+
+        // 额外: 增加键盘友好，但不做强制
+    });
+</script>
+</body>
+</html>
